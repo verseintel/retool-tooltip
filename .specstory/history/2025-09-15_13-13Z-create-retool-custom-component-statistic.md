@@ -5775,11 +5775,267 @@ Now let me update the container to use Retool's CSS variables as well:
 
 ---
 
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/styles/spacing.ts</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -8,5 +8,5 @@
+      lineHeight: 1.2,
+      height: 'fit-content',
+-     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
++     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)'
+    },
+    
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've successfully integrated Retool's official CSS theme into the component.
+
+## 🎨 Retool Theme Integration Complete:
+
+### **✅ What I Added:**
+
+1. **Retool CSS Import**: Added the official Retool CSS file from [https://retool-edge.com/assets_vjs/AppContainer-CSySwDeb.css](https://retool-edge.com/assets_vjs/AppContainer-CSySwDeb.css)
+
+2. **CSS Custom Properties**: Updated all typography to use Retool's CSS variables:
+   - **Font Family**: `var(--sans-serif, fallback)` 
+   - **Colors**: `var(--gray-900, fallback)` and `var(--gray-600, fallback)`
+
+3. **Fallback Values**: Each CSS variable has a fallback value for compatibility
+
+### **🎯 Benefits:**
+
+1. **Native Theme Integration**: Component now uses Retool's exact color scheme and typography
+2. **Automatic Theme Updates**: Will automatically adapt if Retool updates their theme
+3. **Consistent Styling**: Matches Retool's design system perfectly
+4. **Future-Proof**: Uses Retool's official CSS variables
+
+### **📋 CSS Variables Used:**
+
+From the Retool CSS file, I identified and used:
+- **`--sans-serif`**: Retool's standard font family
+- **`--gray-900`**: Primary text color (dark)
+- **`--gray-600`**: Secondary text color (medium gray)
+
+### **🚀 Expected Result:**
+
+The component should now:
+- ✅ Use **Retool's exact font family** and colors
+- ✅ **Automatically adapt** to Retool's theme changes
+- ✅ Look **completely native** within Retool applications
+- ✅ **No more Times font** or hardcoded colors
+
+This approach ensures your component is perfectly integrated with Retool's design system and will automatically stay in sync with any future theme updates!
+
+---
+
+_**User (2025-09-15 12:34Z)**_
+
+Let's try to remove the fontFamily and color from the system to try to inherit from new import
+
+---
+
+_**Assistant**_
+
+Great idea! Let's remove the explicit fontFamily and color properties to see if the imported Retool CSS will provide the inheritance we need.
 
 
 ---
 
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/styles/typography.ts</summary>
 
+undefined
+
+**Chunk 1**
+Lines added: 2, lines removed: 12
+
+```diff
+@@ -1,45 +1,35 @@
+  // Typography styles - reusable across components
+- // Uses Retool's CSS custom properties for proper theme integration
++ // Let Retool's imported CSS handle font-family and color inheritance
+  export const typography = {
+    // Label styles
+    label: {
+-     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontWeight: '600' as const,
+-     fontSize: '14px',
+-     color: 'var(--gray-900, #000000)'
++     fontSize: '14px'
+    },
+    
+    // Caption styles
+    caption: {
+-     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '12px',
+-     color: 'var(--gray-600, #666666)',
+      fontWeight: '400' as const
+    },
+    
+    // Large value styles
+    largeValue: {
+-     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '32px',
+      fontWeight: '700' as const,
+-     color: 'var(--gray-900, #000000)',
+      lineHeight: 1
+    },
+    
+    // Medium value styles
+    mediumValue: {
+-     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '24px',
+      fontWeight: '600' as const,
+-     color: 'var(--gray-900, #000000)',
+      lineHeight: 1.2
+    },
+    
+    // Small value styles
+    smallValue: {
+-     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '18px',
+      fontWeight: '500' as const,
+-     color: 'var(--gray-900, #000000)',
+      lineHeight: 1.2
+    }
+```
+
+</details>
+
+---
+
+Now let me also remove the fontFamily from the container:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/styles/spacing.ts</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 2
+
+```diff
+@@ -7,6 +7,5 @@
+      alignItems: 'flex-start' as const,
+      lineHeight: 1.2,
+-     height: 'fit-content',
+-     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)'
++     height: 'fit-content'
+    },
+    
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've removed the explicit fontFamily and color properties to let the imported Retool CSS handle the inheritance.
+
+## 🎨 Clean Inheritance Approach:
+
+### **✅ What I Removed:**
+
+1. **Font Family**: Removed all `fontFamily` properties from typography and container
+2. **Colors**: Removed all `color` properties from typography styles
+3. **CSS Variables**: Removed the explicit CSS custom property references
+
+### **🎯 What Remains:**
+
+- **Font Weights**: Kept for proper text hierarchy
+- **Font Sizes**: Kept for proper sizing
+- **Line Heights**: Kept for proper spacing
+- **Layout Properties**: Kept all flexbox and positioning
+
+### **📋 Expected Behavior:**
+
+Now the component should:
+- ✅ **Inherit font-family** from the imported Retool CSS
+- ✅ **Inherit colors** from the imported Retool CSS  
+- ✅ **Use Retool's default styling** for text appearance
+- ✅ **Maintain custom sizing** and layout properties
+
+### **🚀 Test This:**
+
+The imported Retool CSS should now provide:
+- Proper font family inheritance
+- Theme-appropriate colors
+- Consistent styling with Retool's interface
+
+This approach lets Retool's CSS take full control of typography and colors while we maintain control over sizing and layout. Let's see if this gives us the proper theme integration we're looking for!
+
+---
+
+_**User (2025-09-15 12:34Z)**_
+
+Please remove inter font imports
+
+---
+
+_**Assistant**_
+
+I'll remove the Inter font imports since we're now relying on the Retool CSS to handle the font inheritance.
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 5
+
+```diff
+@@ -5,12 +5,8 @@
+  import { valueStatisticStyles as styles } from './styles'
+  
+- // Import Retool theme CSS and Inter font for proper theme compatibility
++ // Import Retool theme CSS for proper theme compatibility
+  const themeStyle = document.createElement('style')
+  themeStyle.textContent = `
+    @import url('https://retool-edge.com/assets_vjs/AppContainer-CSySwDeb.css');
+-   @import url('https://rsms.me/inter/inter.css');
+-   @supports (font-variation-settings: normal) {
+-     @import url('https://rsms.me/inter/inter-var.css');
+-   }
+  `
+  document.head.appendChild(themeStyle)
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've removed the Inter font imports, keeping only the Retool theme CSS import.
+
+## 🎨 Clean Theme Import:
+
+### **✅ What I Removed:**
+- **Inter font imports**: Removed `@import url('https://rsms.me/inter/inter.css')`
+- **Inter variable font**: Removed the `@supports` block for Inter variable fonts
+
+### **✅ What Remains:**
+- **Retool CSS only**: Just the official Retool theme CSS import
+- **Clean approach**: Let Retool's CSS handle all font and color inheritance
+
+### **🎯 Expected Result:**
+
+Now the component should:
+- ✅ **Use Retool's fonts** directly from their CSS
+- ✅ **Inherit colors** from Retool's theme system
+- ✅ **No font conflicts** or duplicate font loading
+- ✅ **Cleaner, lighter** component with minimal external dependencies
+
+This approach is much cleaner and relies entirely on Retool's official CSS to provide the proper theming and typography!
 
 ---
 

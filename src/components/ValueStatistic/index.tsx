@@ -4,14 +4,10 @@ import { type FC } from 'react'
 import { Retool } from '@tryretool/custom-component-support'
 import { valueStatisticStyles as styles } from './styles'
 
-// Import Retool theme CSS and Inter font for proper theme compatibility
+// Import Retool theme CSS for proper theme compatibility
 const themeStyle = document.createElement('style')
 themeStyle.textContent = `
   @import url('https://retool-edge.com/assets_vjs/AppContainer-CSySwDeb.css');
-  @import url('https://rsms.me/inter/inter.css');
-  @supports (font-variation-settings: normal) {
-    @import url('https://rsms.me/inter/inter-var.css');
-  }
 `
 document.head.appendChild(themeStyle)
 
