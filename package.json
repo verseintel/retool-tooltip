@@ -1,5 +1,5 @@
 {
-  "name": "retool-tooltip",
+  "name": "value-components",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -36,9 +36,9 @@
     "postcss-modules": "^6.0.0"
   },
   "retoolCustomComponentLibraryConfig": {
-    "name": "RetoolUIComponents",
-    "label": "Retool UI Components",
-    "description": "A collection of reusable UI components including tooltips, popovers, and badges",
+    "name": "ValueComponents",
+    "label": "Value Components",
+    "description": "Retool components for Verse Value application.",
     "entryPoint": "src/index.tsx",
     "outputPath": "dist"
   }
