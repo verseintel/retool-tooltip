@@ -3744,3 +3744,355 @@ This system will make it incredibly easy to create new components with consisten
 
 ---
 
+_**User (2025-09-15 12:34Z)**_
+
+Please update `README.md` file reflecting changes after the file creation.
+
+---
+
+_**Assistant**_
+
+I'll update the main README.md file to reflect all the changes we've made, including the new shared styles system and the ValueStatistic component.
+
+
+---
+
+Read file: undefined
+
+---
+
+Now I'll update the README.md to reflect the current state of the project:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/README.md</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 25, lines removed: 48
+
+```diff
+@@ -1,61 +1,38 @@
+- # Retool UI Components
++ # Value Components
+  
+- A collection of reusable UI components for Retool applications including tooltips, popovers, and badges with accessibility features.
++ A collection of reusable UI components for Retool applications, built with a focus on data visualization and value display. This library provides a consistent design system with shared styles and components optimized for business dashboards and analytics.
+  
+  ## Components
+  
+- ### 1. RetoolTooltip
++ ### ValueStatistic
+  
+- A customizable tooltip component that provides hover-based help text.
++ A comprehensive statistic display component that shows key metrics with customizable formatting and tooltips.
+  
+  **Features:**
+  
+- - Mouse hover activation
+- - Keyboard accessibility (Tab to focus, Escape to close)
+- - Configurable positioning (top, bottom, left, right)
+- - Customizable delay before showing
+- - ARIA compliance for screen readers
++ - **Flexible Formatting**: Support for Standard, Numeric, Percent, and Currency (USD/BRL) formats
++ - **Customizable Precision**: Configurable minimum and maximum decimal places
++ - **Interactive Tooltips**: Hover-based help text with markdown support
++ - **Accessibility**: Full keyboard navigation and screen reader support
++ - **Responsive Design**: Clean, modern layout that works across devices
+  
+  **Parameters:**
+  
+- - **`tooltipText`** (string, required) - The text to display in the tooltip
+- - **`componentRef`** (string, optional) - Reference to the Retool component to show tooltip on
+- - **`position`** (string, optional) - Tooltip position: `top`, `bottom`, `left`, `right` (default: `top`)
+- - **`delay`** (number, optional) - Delay in milliseconds before showing tooltip (default: `500`)
+- 
+- ### 2. RetoolPopover
+- 
+- A more advanced tooltip with click-to-show functionality and click-outside-to-close behavior.
+- 
+- **Features:**
+- 
+- - Click to show/hide
+- - Click outside to close
+- - Configurable positioning
+- - Larger content area
+- - ARIA compliance
+- 
+- **Parameters:**
+- 
+- - **`content`** (string, required) - The content to display in the popover
+- - **`triggerText`** (string, optional) - The text for the trigger button (default: "Click me")
+- - **`position`** (string, optional) - Popover position: `top`, `bottom`, `left`, `right` (default: `bottom`)
+- 
+- ### 3. RetoolBadge
+- 
+- A simple status indicator component with multiple variants and sizes.
+- 
+- **Features:**
+- 
+- - Multiple color variants (primary, secondary, success, warning, danger)
+- - Three sizes (small, medium, large)
+- - Clean, modern design
+- - Inline display
+- 
+- **Parameters:**
+- 
+- - **`text`** (string, required) - The text to display in the badge
+- - **`variant`** (string, optional) - Badge variant: `primary`, `secondary`, `success`, `warning`, `danger` (default: `primary`)
+- - **`size`** (string, optional) - Badge size: `small`, `medium`, `large` (default: `medium`)
++ - **`Label`** (string, default: "Gross volume") - The label text displayed above the value
++ - **`Value`** (number, default: 7552.8) - The numeric value to display
++ - **`Caption`** (string, default: "Since last month") - Descriptive text below the value
++ - **`Format`** (dropdown) - Value format: Standard, Numeric, Percent, Currency (BRL), Currency (USD)
++ - **`Tooltip`** (string) - Help text with markdown support (**bold**, *italic*, line breaks)
++ - **`Minimum Fraction Digits`** (number, default: 2) - Minimum decimal places
++ - **`Maximum Fraction Digits`** (number, default: 2) - Maximum decimal places
++ 
++ **Example Usage:**
++ ```
++ Label: "Revenue"
++ Value: 125000
++ Caption: "Q4 2024"
++ Format: "Currency (USD)"
++ Tooltip: "**Total revenue** for Q4 2024\nIncluding all product lines"
++ ```
+  
+  ## Usage
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/README.md</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 37, lines removed: 8
+
+```diff
+@@ -34,19 +34,48 @@
+  Format: "Currency (USD)"
+  Tooltip: "**Total revenue** for Q4 2024\nIncluding all product lines"
++ ```
++ 
++ ## Design System
++ 
++ This library includes a comprehensive shared styles system that ensures consistency across all components:
++ 
++ ### Shared Styles Architecture
++ 
++ ```
++ src/styles/
++ ├── typography.ts     # Text and font styles
++ ├── spacing.ts        # Layout and spacing utilities  
++ ├── tooltip.ts        # Tooltip-related styles
++ └── index.ts          # Central export
++ ```
++ 
++ ### Style Categories
++ 
++ - **Typography**: Consistent text styles (labels, captions, values)
++ - **Spacing**: Layout utilities and margin/padding helpers
++ - **Tooltip**: Reusable tooltip components and interactions
++ 
++ ### Component Structure
++ 
++ Each component follows a consistent pattern:
++ ```
++ src/components/ComponentName/
++ ├── index.tsx         # Component logic
++ └── styles.ts         # Component-specific styles
+  ```
+  
+  ## Usage
+  
+- 1. Drag any of the components onto your Retool canvas
+- 2. Configure the required parameters (marked as required above)
+- 3. Optionally customize the optional parameters
+- 4. The components will render with your specified settings
++ 1. **Drag Components**: Add components to your Retool canvas
++ 2. **Configure Parameters**: Set values, labels, and formatting options
++ 3. **Customize Styling**: Use the shared design system for consistency
++ 4. **Add Interactivity**: Configure tooltips and interactions
+  
+  ## Accessibility Features
+  
+- - **ARIA attributes**: Uses `role="tooltip"` and `aria-describedby`
+- - **Keyboard support**: Tab to focus, Escape to close
+- - **Screen reader friendly**: Proper semantic markup and descriptions
+- - **Focus management**: Tooltip appears on focus, disappears on blur
++ - **ARIA Compliance**: Proper semantic markup and screen reader support
++ - **Keyboard Navigation**: Full keyboard accessibility with Tab and Escape
++ - **Focus Management**: Clear focus indicators and logical tab order
++ - **Screen Reader Support**: Descriptive labels and tooltip content
+  
+  ## Development
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/README.md</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 48, lines removed: 13
+
+```diff
+@@ -81,36 +81,71 @@
+  ## Development
+  
+- This component is built using the [Retool Custom Component Libraries](https://docs.retool.com/apps/guides/custom/custom-component-libraries) framework.
++ This library is built using the [Retool Custom Component Libraries](https://docs.retool.com/apps/guides/custom/custom-component-libraries) framework with a focus on maintainability and scalability.
+  
+  ### Prerequisites
+  
+  - Node.js v20 or later
+  - Admin permissions in Retool
++ - TypeScript knowledge (for extending components)
+  
+  ### Getting Started
+  
+- 1. Install dependencies:
+- 
++ 1. **Install Dependencies:**
+     ```bash
+     npm install
+     ```
+  
+- 2. Log in to Retool:
+- 
++ 2. **Initialize Retool Connection:**
+     ```bash
+-    npx retool-ccl login
++    npx retool-ccl init
+     ```
+  
+- 3. Start development mode:
+- 
++ 3. **Start Development Mode:**
+     ```bash
+-    npx retool-ccl dev
++    npm run dev
+     ```
+  
+- 4. Deploy when ready:
++ 4. **Deploy to Production:**
+     ```bash
+-    npx retool-ccl deploy
+-    ```
+- 
++    npm run deploy
++    ```
++ 
++ ### Creating New Components
++ 
++ Follow the established pattern for consistency:
++ 
++ 1. **Create Component Directory:**
++    ```
++    src/components/ValueChart/
++    ├── index.tsx
++    └── styles.ts
++    ```
++ 
++ 2. **Use Shared Styles:**
++    ```tsx
++    import { typography, spacing } from '../../styles'
++    
++    export const valueChartStyles = {
++      container: spacing.container,
++      title: typography.label,
++      value: typography.largeValue
++    }
++    ```
++ 
++ 3. **Export from Main Index:**
++    ```tsx
++    // src/index.tsx
++    export { ValueChart } from './components/ValueChart'
++    ```
++ 
++ ### Style System Guidelines
++ 
++ - **Compose Shared Styles**: Use object spread to combine shared styles
++ - **Component-Specific**: Keep unique styles in component files
++ - **Consistent Naming**: Use descriptive names for style objects
++ - **Type Safety**: Leverage TypeScript for style validation
++ 
++ See [src/styles/README.md](src/styles/README.md) for detailed documentation.
++ 
+  ## License
+  
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've completely updated the README.md file to reflect all the changes we've made. Here's a summary of what I've updated:
+
+## 📝 README.md Updates
+
+### **🔄 Major Changes:**
+
+1. **Updated Project Name**: Changed from "Retool UI Components" to "Value Components"
+2. **New Focus**: Emphasized data visualization and business dashboard components
+3. **Removed Old Components**: Removed references to RetoolTooltip, RetoolPopover, and RetoolBadge
+4. **Added ValueStatistic**: Comprehensive documentation for the new component
+
+### **📋 New Sections Added:**
+
+1. **ValueStatistic Component Documentation**:
+   - Complete feature list
+   - All parameters with defaults
+   - Example usage
+   - Format options
+
+2. **Design System Section**:
+   - Shared styles architecture
+   - Style categories explanation
+   - Component structure pattern
+
+3. **Enhanced Development Section**:
+   - Updated prerequisites
+   - New component creation guidelines
+   - Style system guidelines
+   - Reference to detailed documentation
+
+### **�� Key Improvements:**
+
+- ✅ **Accurate Documentation**: Reflects current project state
+- ✅ **Clear Examples**: Shows how to use ValueStatistic
+- ✅ **Development Guide**: Helps future component creation
+- ✅ **Style System**: Explains the shared styles architecture
+- ✅ **Professional Presentation**: Clean, organized structure
+
+### **📚 Documentation Structure:**
+
+```
+README.md
+├── Project Overview
+├── ValueStatistic Component
+├── Design System
+├── Usage Instructions
+├── Accessibility Features
+├── Development Guide
+│   ├── Prerequisites
+│   ├── Getting Started
+│   ├── Creating New Components
+│   └── Style System Guidelines
+└── License
+```
+
+The README now serves as a comprehensive guide for both users and developers, providing clear instructions for using the ValueStatistic component and creating new components following the established patterns. It also properly documents the shared styles system we've built!
+
+---
+
