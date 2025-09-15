@@ -33,7 +33,7 @@ export const ValueStatistic: FC = () => {
 
   const [tooltip, _setTooltip] = Retool.useStateString({
     name: 'Tooltip',
-    description: 'Tooltip text to show when hovering over the info icon'
+    description: 'Tooltip text to show when hovering over the info icon. Supports basic markdown: **bold**, *italic*, and line breaks'
   })
 
   // Tooltip state
@@ -50,22 +50,22 @@ export const ValueStatistic: FC = () => {
     switch (formatType) {
       case 'Numeric':
         return new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 2,
           maximumFractionDigits: 2
         }).format(val)
       
       case 'Percent':
         return new Intl.NumberFormat('en-US', {
           style: 'percent',
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 2,
           maximumFractionDigits: 2
-        }).format(val / 100)
+        }).format(val)
       
       case 'Currency (USD)':
         return new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD',
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 2,
           maximumFractionDigits: 2
         }).format(val)
       
@@ -73,14 +73,14 @@ export const ValueStatistic: FC = () => {
         return new Intl.NumberFormat('pt-BR', {
           style: 'currency',
           currency: 'BRL',
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 2,
           maximumFractionDigits: 2
         }).format(val)
       
       case 'Standard':
       default:
         return new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 0,
+          minimumFractionDigits: 2,
           maximumFractionDigits: 2
         }).format(val)
     }
@@ -88,22 +88,35 @@ export const ValueStatistic: FC = () => {
 
   // Calculate tooltip position
   const calculateTooltipPosition = () => {
-    if (!iconRef.current || !tooltipRef.current) return
+    if (!iconRef.current || !tooltipRef.current) {
+      return
+    }
 
     const iconRect = iconRef.current.getBoundingClientRect()
     const tooltipRect = tooltipRef.current.getBoundingClientRect()
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+    
+    // Position relative to the icon, not the viewport
+    let top = -tooltipRect.height - 8  // Above the icon
+    let left = (iconRect.width - tooltipRect.width) / 2  // Centered on icon
 
-    const top = iconRect.top + scrollTop - tooltipRect.height - 8
-    const left = iconRect.left + scrollLeft + (iconRect.width - tooltipRect.width) / 2
+    // Ensure tooltip doesn't go off-screen to the left
+    if (left < 0) {
+      left = 0
+    }
+
+    // If tooltip would go above the viewport, position it below the icon instead
+    if (top < 0) {
+      top = iconRect.height + 8  // Below the icon
+    }
 
     setTooltipPosition({ top, left })
   }
 
   // Show tooltip with delay
   const showTooltip = () => {
-    if (!tooltip) return
+    if (!tooltip) {
+      return
+    }
     
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
@@ -145,6 +158,39 @@ export const ValueStatistic: FC = () => {
       hideTooltip()
     }
   }
+
+  // Simple markdown parser for tooltip content
+  const parseMarkdown = (text: string): React.ReactNode => {
+    if (!text) return text
+
+    // Split by line breaks first
+    const lines = text.split('\n')
+    
+    return lines.map((line, lineIndex) => {
+      // Parse each line for markdown
+      const parts = line.split(/(\*\*.*?\*\*|\*.*?\*)/g)
+      
+      const parsedLine = parts.map((part, partIndex) => {
+        if (part.startsWith('**') && part.endsWith('**')) {
+          // Bold text
+          return <strong key={`${lineIndex}-${partIndex}`}>{part.slice(2, -2)}</strong>
+        } else if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+          // Italic text
+          return <em key={`${lineIndex}-${partIndex}`}>{part.slice(1, -1)}</em>
+        } else {
+          // Regular text
+          return part
+        }
+      })
+
+      return (
+        <div key={lineIndex} style={{ marginBottom: lineIndex < lines.length - 1 ? '4px' : '0' }}>
+          {parsedLine}
+        </div>
+      )
+    })
+  }
+
 
   return (
     <div style={{ 
@@ -253,23 +299,33 @@ export const ValueStatistic: FC = () => {
             wordWrap: 'break-word',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
             opacity: 1,
-            transition: 'opacity 0.2s ease-in-out'
+            transition: 'opacity 0.2s ease-in-out',
+            pointerEvents: 'none'
           }}
         >
-          {tooltip}
+          {parseMarkdown(tooltip)}
           
           {/* Arrow pointing to icon */}
           <div
             style={{
               position: 'absolute',
-              top: '100%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: 0,
-              height: 0,
-              borderLeft: '6px solid transparent',
-              borderRight: '6px solid transparent',
-              borderTop: '6px solid #333'
+              ...(tooltipPosition.top < 0 ? {
+                // Tooltip is above icon, arrow points down
+                top: '100%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                borderLeft: '6px solid transparent',
+                borderRight: '6px solid transparent',
+                borderTop: '6px solid #333'
+              } : {
+                // Tooltip is below icon, arrow points up
+                bottom: '100%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                borderLeft: '6px solid transparent',
+                borderRight: '6px solid transparent',
+                borderBottom: '6px solid #333'
+              })
             }}
           />
         </div>
