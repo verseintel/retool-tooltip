@@ -36,6 +36,18 @@ export const ValueStatistic: FC = () => {
     description: 'Tooltip text to show when hovering over the info icon. Supports basic markdown: **bold**, *italic*, and line breaks'
   })
 
+  const [minimumFractionDigits, _setMinimumFractionDigits] = Retool.useStateNumber({
+    name: 'Minimum Fraction Digits',
+    description: 'Minimum number of digits after the decimal point',
+    initialValue: 2
+  })
+
+  const [maximumFractionDigits, _setMaximumFractionDigits] = Retool.useStateNumber({
+    name: 'Maximum Fraction Digits',
+    description: 'Maximum number of digits after the decimal point',
+    initialValue: 2
+  })
+
   // Tooltip state
   const [isTooltipVisible, setIsTooltipVisible] = useState(false)
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 })
@@ -47,42 +59,38 @@ export const ValueStatistic: FC = () => {
   const formatValue = (val: number, formatType: string): string => {
     if (isNaN(val)) return '0'
 
+    const fractionDigits = {
+      minimumFractionDigits: minimumFractionDigits || 2,
+      maximumFractionDigits: maximumFractionDigits || 2
+    }
+
     switch (formatType) {
       case 'Numeric':
-        return new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(val)
+        return new Intl.NumberFormat('en-US', fractionDigits).format(val)
       
       case 'Percent':
         return new Intl.NumberFormat('en-US', {
           style: 'percent',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          ...fractionDigits
         }).format(val)
       
       case 'Currency (USD)':
         return new Intl.NumberFormat('en-US', {
           style: 'currency',
           currency: 'USD',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          ...fractionDigits
         }).format(val)
       
       case 'Currency (BRL)':
         return new Intl.NumberFormat('pt-BR', {
           style: 'currency',
           currency: 'BRL',
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
+          ...fractionDigits
         }).format(val)
       
       case 'Standard':
       default:
-        return new Intl.NumberFormat('en-US', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        }).format(val)
+        return new Intl.NumberFormat('en-US', fractionDigits).format(val)
     }
   }
 
