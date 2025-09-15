@@ -5,7 +5,6 @@ export const spacing = {
     display: 'flex',
     flexDirection: 'column' as const,
     alignItems: 'flex-start' as const,
-    fontFamily: 'system-ui, -apple-system, sans-serif',
     lineHeight: 1.2
   },
   
