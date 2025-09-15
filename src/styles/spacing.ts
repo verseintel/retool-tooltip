@@ -7,7 +7,7 @@ export const spacing = {
     alignItems: 'flex-start' as const,
     lineHeight: 1.2,
     height: 'fit-content',
-    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)'
   },
   
   // Row container (horizontal layout)

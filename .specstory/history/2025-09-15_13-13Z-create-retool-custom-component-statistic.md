@@ -5648,3 +5648,138 @@ This approach ensures your component matches Retool's visual design system while
 
 ---
 
+_**User (2025-09-15 12:34Z)**_
+
+Please add a reference to the css @https://retool-edge.com/assets_vjs/AppContainer-CSySwDeb.css  to import in the right place of this application
+
+---
+
+_**Assistant**_
+
+Perfect! I can see from the Retool CSS file that they use CSS custom properties (CSS variables) for their theme system. Let me update the component to use these Retool-specific CSS variables instead of hardcoded values.
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 5, lines removed: 4
+
+```diff
+@@ -5,13 +5,14 @@
+  import { valueStatisticStyles as styles } from './styles'
+  
+- // Import Inter font for Retool theme compatibility
+- const fontStyle = document.createElement('style')
+- fontStyle.textContent = `
++ // Import Retool theme CSS and Inter font for proper theme compatibility
++ const themeStyle = document.createElement('style')
++ themeStyle.textContent = `
++   @import url('https://retool-edge.com/assets_vjs/AppContainer-CSySwDeb.css');
+    @import url('https://rsms.me/inter/inter.css');
+    @supports (font-variation-settings: normal) {
+      @import url('https://rsms.me/inter/inter-var.css');
+    }
+  `
+- document.head.appendChild(fontStyle)
++ document.head.appendChild(themeStyle)
+  
+  export const ValueStatistic: FC = () => {
+```
+
+</details>
+
+---
+
+Now let me update the typography to use Retool's CSS custom properties instead of hardcoded values:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/styles/typography.ts</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 11, lines removed: 11
+
+```diff
+@@ -1,45 +1,45 @@
+  // Typography styles - reusable across components
+- // Note: Retool custom components run in iframe, so we need to explicitly set font-family and colors
++ // Uses Retool's CSS custom properties for proper theme integration
+  export const typography = {
+    // Label styles
+    label: {
+-     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
++     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontWeight: '600' as const,
+      fontSize: '14px',
+-     color: '#333333'
++     color: 'var(--gray-900, #000000)'
+    },
+    
+    // Caption styles
+    caption: {
+-     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
++     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '12px',
+-     color: '#666666',
++     color: 'var(--gray-600, #666666)',
+      fontWeight: '400' as const
+    },
+    
+    // Large value styles
+    largeValue: {
+-     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
++     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '32px',
+      fontWeight: '700' as const,
+-     color: '#000000',
++     color: 'var(--gray-900, #000000)',
+      lineHeight: 1
+    },
+    
+    // Medium value styles
+    mediumValue: {
+-     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
++     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '24px',
+      fontWeight: '600' as const,
+-     color: '#000000',
++     color: 'var(--gray-900, #000000)',
+      lineHeight: 1.2
+    },
+    
+    // Small value styles
+    smallValue: {
+-     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
++     fontFamily: 'var(--sans-serif, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif)',
+      fontSize: '18px',
+      fontWeight: '500' as const,
+-     color: '#000000',
++     color: 'var(--gray-900, #000000)',
+      lineHeight: 1.2
+    }
+```
+
+</details>
+
+---
+
+Now let me update the container to use Retool's CSS variables as well:
+
+
+---
+
+
+
+---
+
+
+
+---
+
