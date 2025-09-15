@@ -6039,3 +6039,70 @@ This approach is much cleaner and relies entirely on Retool's official CSS to pr
 
 ---
 
+_**User (2025-09-15 12:50Z)**_
+
+Please check if we or retool are using this setter. It's possible to remove it?
+
+---
+
+_**Assistant**_
+
+Let me check if the setter functions are being used anywhere in the component or if they can be removed.
+
+
+---
+
+
+
+---
+
+
+
+---
+
+Perfect! I can see that none of the Retool setter functions (the ones with `_set` prefix) are being used anywhere in the component. They're only declared but never called. Let me remove them to clean up the code.
+
+
+---
+
+The string to replace was not found in the file.
+
+---
+
+Let me use the MultiEdit tool to remove all the unused setter functions:
+
+
+---
+
+
+
+---
+
+Perfect! ✅ I've successfully removed all the unused setter functions from the component.
+
+## 🧹 Code Cleanup Complete:
+
+### **✅ What I Removed:**
+- **`_setLabel`** - Unused setter for label parameter
+- **`_setValue`** - Unused setter for value parameter  
+- **`_setCaption`** - Unused setter for caption parameter
+- **`_setFormat`** - Unused setter for format parameter
+- **`_setTooltip`** - Unused setter for tooltip parameter
+- **`_setMinimumFractionDigits`** - Unused setter for minimum fraction digits
+- **`_setMaximumFractionDigits`** - Unused setter for maximum fraction digits
+- **`_setValueRanges`** - Unused setter for value ranges parameter
+
+### **🎯 Why This Works:**
+
+1. **Retool Handles Updates**: Retool's framework automatically updates these values when users change them in the UI
+2. **Read-Only Component**: Our component only needs to read these values, not set them
+3. **Cleaner Code**: Removes 8 unused variables that were cluttering the code
+4. **Better Performance**: Slightly reduces memory usage by not storing unused functions
+
+### **📋 Result:**
+The component is now cleaner and more efficient, with only the values we actually use. Retool will still be able to update these parameters through its own internal mechanisms when users interact with the component in the Retool interface.
+
+This is a common pattern in Retool custom components - you typically only need the getter values, not the setters, since Retool handles the state management internally.
+
+---
+

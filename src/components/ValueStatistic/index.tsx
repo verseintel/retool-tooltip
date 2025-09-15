@@ -13,24 +13,24 @@ document.head.appendChild(themeStyle)
 
 export const ValueStatistic: FC = () => {
   // Component parameters
-  const [label, _setLabel] = Retool.useStateString({
+  const [label] = Retool.useStateString({
     name: 'Label',
     description: 'The label text to display above the value',
     initialValue: 'Gross volume'
   })
 
-  const [value, _setValue] = Retool.useStateNumber({
+  const [value] = Retool.useStateNumber({
     name: 'Value',
     description: 'The numeric value to display',
     initialValue: 7552.8
   }) 
 
-  const [caption, _setCaption] = Retool.useStateString({
+  const [caption] = Retool.useStateString({
     name: 'Caption',
     description: 'The caption text to display below the value. If empty, will auto-generate from Value Ranges'
   })
 
-  const [format, _setFormat] = Retool.useStateEnumeration({
+  const [format] = Retool.useStateEnumeration({
     name: 'Format',
     description: 'Value format options',
     enumDefinition: ['Standard', 'Numeric', 'Percent', 'Currency (BRL)', 'Currency (USD)'],
@@ -38,24 +38,24 @@ export const ValueStatistic: FC = () => {
     inspector: 'select'
   })
 
-  const [tooltip, _setTooltip] = Retool.useStateString({
+  const [tooltip] = Retool.useStateString({
     name: 'Tooltip',
     description: 'Tooltip text to show when hovering over the info icon. Supports basic markdown: **bold**, *italic*, and line breaks'
   })
 
-  const [minimumFractionDigits, _setMinimumFractionDigits] = Retool.useStateNumber({
+  const [minimumFractionDigits] = Retool.useStateNumber({
     name: 'Minimum Fraction Digits',
     description: 'Minimum number of digits after the decimal point',
     initialValue: 2
   })
 
-  const [maximumFractionDigits, _setMaximumFractionDigits] = Retool.useStateNumber({
+  const [maximumFractionDigits] = Retool.useStateNumber({
     name: 'Maximum Fraction Digits',
     description: 'Maximum number of digits after the decimal point',
     initialValue: 2
   })
 
-  const [valueRanges, _setValueRanges] = Retool.useStateArray({
+  const [valueRanges] = Retool.useStateArray({
     name: 'Value Ranges',
     description: 'Array of value ranges with min_value, max_value, and name for automatic categorization'
   })
