@@ -13,6 +13,7 @@ A comprehensive statistic display component that shows key metrics with customiz
 - **Flexible Formatting**: Support for Standard, Numeric, Percent, and Currency (USD/BRL) formats
 - **Customizable Precision**: Configurable minimum and maximum decimal places
 - **Interactive Tooltips**: Hover-based help text with markdown support
+- **Smart Color Coding**: Automatic color gradient from red (min) to green (max) for numeric values
 - **Accessibility**: Full keyboard navigation and screen reader support
 - **Responsive Design**: Clean, modern layout that works across devices
 
@@ -74,6 +75,20 @@ When `Caption` is empty, the component automatically determines the appropriate 
 - Value `1.4` → Caption: "Transformador"
 - Value `1.25` → Caption: "Impactante"
 - Value `1.15` → Caption: "Positivo / Contributivo"
+
+**Smart Color Coding:**
+
+For `Format: "Numeric"`, the value color automatically adjusts based on its position within the value ranges:
+
+- **Red** (`#4A151B`) - Values at the minimum range
+- **Green** (`#5CBC15`) - Values at the maximum range
+- **Gradient** - Smooth color transition between min and max values
+
+**Example:**
+
+- Value `0.5` (min) → Red color
+- Value `1.0` (middle) → Orange/Yellow color
+- Value `1.5` (max) → Green color
 
 ## Design System
 

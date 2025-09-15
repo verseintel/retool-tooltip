@@ -77,7 +77,7 @@ export const ValueStatistic: FC = () => {
 
     // Find the range that contains the value
     const matchingRange = ranges.find(range => 
-      val >= range.min_value && val < range.max_value
+      val >= range.min_value && val <= range.max_value
     )
 
     return matchingRange ? matchingRange.name : null
@@ -93,6 +93,32 @@ export const ValueStatistic: FC = () => {
     const ranges = (valueRanges || []) as unknown as ValueRange[]
     const category = findCategoryForValue(value || 0, ranges)
     return category || ''
+  }
+
+  // Calculate color based on value position within ranges
+  const getValueColor = (val: number, ranges: ValueRange[]): string => {
+    if (!ranges || ranges.length === 0) {
+      return '#000' // Default black if no ranges
+    }
+
+    // Find min and max values across all ranges
+    const allMinValues = ranges.map(range => range.min_value)
+    const allMaxValues = ranges.map(range => range.max_value)
+    const globalMin = Math.min(...allMinValues)
+    const globalMax = Math.max(...allMaxValues)
+
+    // Clamp value within the global range
+    const clampedValue = Math.max(globalMin, Math.min(globalMax, val))
+    
+    // Calculate position (0 = min, 1 = max)
+    const position = (clampedValue - globalMin) / (globalMax - globalMin)
+
+    // Interpolate between red (#4A151B) and green (#5CBC15)
+    const red = Math.round(74 + (92 - 74) * position) // 74 to 92
+    const green = Math.round(21 + (188 - 21) * position) // 21 to 188
+    const blue = Math.round(27 + (21 - 27) * position) // 27 to 21
+
+    return `rgb(${red}, ${green}, ${blue})`
   }
 
   // Format the value based on the format type
@@ -271,7 +297,11 @@ export const ValueStatistic: FC = () => {
       )}
 
       {/* Value */}
-      <div style={{...styles.value, ...(!getEffectiveCaption() ? styles.valueWithoutCaption : {})}}>
+      <div style={{
+        ...styles.value, 
+        ...(!getEffectiveCaption() ? styles.valueWithoutCaption : {}),
+        color: format === 'Numeric' ? getValueColor(value || 0, (valueRanges || []) as unknown as ValueRange[]) : styles.value.color
+      }}>
         {formatValue(value || 0, format)}
       </div>
 
