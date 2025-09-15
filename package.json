@@ -1,5 +1,5 @@
 {
-  "name": "my-react-app",
+  "name": "retool-tooltip",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -34,5 +34,12 @@
     "eslint-plugin-react": "^7.34.1",
     "prettier": "^3.0.3",
     "postcss-modules": "^6.0.0"
+  },
+  "retoolCustomComponentLibraryConfig": {
+    "name": "RetoolUIComponents",
+    "label": "Retool UI Components",
+    "description": "A collection of reusable UI components including tooltips, popovers, and badges",
+    "entryPoint": "src/index.tsx",
+    "outputPath": "dist"
   }
 }
