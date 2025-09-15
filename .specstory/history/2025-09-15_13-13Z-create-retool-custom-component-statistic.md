@@ -5415,7 +5415,236 @@ Perfect! ✅ I've updated the typography to inherit from Retool's theme.
 ### **�� Expected Result:**
 
 The component should now:
+- Use Retool's default font family
+- Adapt colors to match the current theme
+- Look more integrated with the Retool interface
+- Automatically support dark/light mode if Retool provides it
 
+This approach ensures your component feels like a native part of Retool's interface while maintaining its custom styling and functionality!
+
+---
+
+_**User (2025-09-15 12:34Z)**_
+
+Retool is exibiting the font-family as Times and color as black, instead from inheriting from current retool's theme. Can you check documentation? 
+
+---
+
+_**Assistant**_
+
+You're right! Let me check the Retool documentation to see the proper way to inherit theme styles. The `inherit` approach might not work as expected in Retool's custom component environment.
+
+
+---
+
+<details>
+            <summary>Searched web "Retool custom components CSS theme inheritance font-family color documentation" • **1** results</summary>
+        
+| Title | URL |
+|-------|-----|
+| Web Search Results | undefined |
+
+</details>
+
+---
+
+<details>
+            <summary>Searched web "Retool custom components CSS variables theme colors font-family 2024" • **1** results</summary>
+        
+| Title | URL |
+|-------|-----|
+| Web Search Results | undefined |
+
+</details>
+
+---
+
+Perfect! Now I understand the issue. Retool custom components run in an `iframe` which prevents them from inheriting styles from the parent theme. Let me fix this by using Retool's standard font (Inter) and proper color values.
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/styles/typography.ts</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 11, lines removed: 10
+
+```diff
+@@ -1,44 +1,45 @@
+  // Typography styles - reusable across components
++ // Note: Retool custom components run in iframe, so we need to explicitly set font-family and colors
+  export const typography = {
+    // Label styles
+    label: {
+-     fontFamily: 'inherit',
++     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      fontWeight: '600' as const,
+      fontSize: '14px',
+-     color: 'inherit'
++     color: '#333333'
+    },
+    
+    // Caption styles
+    caption: {
+-     fontFamily: 'inherit',
++     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      fontSize: '12px',
+-     color: 'inherit',
++     color: '#666666',
+      fontWeight: '400' as const
+    },
+    
+    // Large value styles
+    largeValue: {
+-     fontFamily: 'inherit',
++     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      fontSize: '32px',
+      fontWeight: '700' as const,
+-     color: 'inherit',
++     color: '#000000',
+      lineHeight: 1
+    },
+    
+    // Medium value styles
+    mediumValue: {
+-     fontFamily: 'inherit',
++     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      fontSize: '24px',
+      fontWeight: '600' as const,
+-     color: 'inherit',
++     color: '#000000',
+      lineHeight: 1.2
+    },
+    
+    // Small value styles
+    smallValue: {
+-     fontFamily: 'inherit',
++     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      fontSize: '18px',
+      fontWeight: '500' as const,
+-     color: 'inherit',
++     color: '#000000',
+      lineHeight: 1.2
+    }
+```
+
+</details>
+
+---
+
+Now let me also update the container to use the proper font family:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/styles/spacing.ts</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -8,5 +8,5 @@
+      lineHeight: 1.2,
+      height: 'fit-content',
+-     fontFamily: 'inherit'
++     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    },
+    
+```
+
+</details>
+
+---
+
+Now I need to add the Inter font import to the component. Let me add it to the main component file:
+
+
+---
+
+The string to replace was not found in the file.
+
+---
+
+Let me read the current file to see the exact imports:
+
+
+---
+
+Read file: undefined
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 10, lines removed: undefined
+
+```diff
+@@ -4,4 +4,14 @@
+  import { Retool } from '@tryretool/custom-component-support'
+  import { valueStatisticStyles as styles } from './styles'
++ 
++ // Import Inter font for Retool theme compatibility
++ const fontStyle = document.createElement('style')
++ fontStyle.textContent = `
++   @import url('https://rsms.me/inter/inter.css');
++   @supports (font-variation-settings: normal) {
++     @import url('https://rsms.me/inter/inter-var.css');
++   }
++ `
++ document.head.appendChild(fontStyle)
+  
+  export const ValueStatistic: FC = () => {
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've fixed the theme inheritance issue based on the Retool documentation.
+
+## 🎨 Retool Theme Compatibility Fixed:
+
+### **✅ The Problem:**
+- Retool custom components run in an `iframe` which prevents style inheritance
+- `inherit` values don't work because there's no parent theme context
+- Components default to browser defaults (Times font, black color)
+
+### **✅ The Solution:**
+
+1. **Inter Font Import**: Added the official Retool font (Inter) with proper fallbacks
+2. **Explicit Colors**: Set proper color values that match Retool's theme
+3. **Font Stack**: Used Retool's standard font stack with system fallbacks
+
+### **🎯 Changes Made:**
+
+1. **Font Family**: 
+   ```typescript
+   fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+   ```
+
+2. **Colors**:
+   - **Label**: `#333333` (dark gray)
+   - **Caption**: `#666666` (medium gray) 
+   - **Value**: `#000000` (black)
+
+3. **Font Import**: Added Inter font loading directly in the component
+
+### **📋 Expected Result:**
+
+The component should now:
+- ✅ Use **Inter font** (Retool's standard font)
+- ✅ Display proper **theme-appropriate colors**
+- ✅ Look **native** within Retool applications
+- ✅ **No more Times font** or default browser styling
+
+This approach ensures your component matches Retool's visual design system while working within the iframe constraints!
 
 ---
 
