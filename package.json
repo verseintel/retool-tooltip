@@ -38,7 +38,7 @@
   "retoolCustomComponentLibraryConfig": {
     "name": "ValueComponents",
     "label": "Value Components",
-    "description": "Retool components for Verse Value application.",
+    "description": "Retool components for Verse Value",
     "entryPoint": "src/index.tsx",
     "outputPath": "dist"
   }
