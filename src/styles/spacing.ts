@@ -5,7 +5,9 @@ export const spacing = {
     display: 'flex',
     flexDirection: 'column' as const,
     alignItems: 'flex-start' as const,
-    lineHeight: 1.2
+    lineHeight: 1.2,
+    height: 'fit-content',
+    fontFamily: 'inherit'
   },
   
   // Row container (horizontal layout)
