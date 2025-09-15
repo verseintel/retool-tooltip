@@ -6106,3 +6106,49 @@ This is a common pattern in Retool custom components - you typically only need t
 
 ---
 
+_**User (2025-09-15 12:50Z)**_
+
+For the code present, we get this error:
+```
+Property 'color' does not exist on type '{ marginBottom: string; fontSize: string; fontWeight: "700"; lineHeight: number; }'.
+```
+How can I resolve this? If you propose a fix, please make it concise.
+
+---
+
+_**Assistant**_
+
+The error occurs because `styles.value.color` doesn't exist since we removed the color property from typography. Here's the concise fix:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -308,5 +308,5 @@
+          ...styles.value, 
+          ...(!getEffectiveCaption() ? styles.valueWithoutCaption : {}),
+-         color: format === 'Numeric' ? getValueColor(value || 0, (valueRanges || []) as unknown as ValueRange[]) : styles.value.color
++         color: format === 'Numeric' ? getValueColor(value || 0, (valueRanges || []) as unknown as ValueRange[]) : undefined
+        }}>
+          {formatValue(value || 0, format)}
+```
+
+</details>
+
+---
+
+✅ **Fixed!** 
+
+**The Issue:** `styles.value.color` doesn't exist since we removed color properties from typography.
+
+**The Solution:** Use `undefined` as fallback instead of the non-existent `styles.value.color`. This allows the color to inherit from the imported Retool CSS when not using the numeric format with color coding.
+
+---
+

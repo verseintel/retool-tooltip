@@ -307,7 +307,7 @@ export const ValueStatistic: FC = () => {
       <div style={{
         ...styles.value, 
         ...(!getEffectiveCaption() ? styles.valueWithoutCaption : {}),
-        color: format === 'Numeric' ? getValueColor(value || 0, (valueRanges || []) as unknown as ValueRange[]) : styles.value.color
+        color: format === 'Numeric' ? getValueColor(value || 0, (valueRanges || []) as unknown as ValueRange[]) : undefined
       }}>
         {formatValue(value || 0, format)}
       </div>
