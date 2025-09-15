@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { type FC } from 'react'
 
 import { Retool } from '@tryretool/custom-component-support'
+import { valueStatisticStyles as styles } from './styles'
 
 export const ValueStatistic: FC = () => {
   // Component parameters
@@ -63,6 +64,7 @@ export const ValueStatistic: FC = () => {
       minimumFractionDigits: minimumFractionDigits || 2,
       maximumFractionDigits: maximumFractionDigits || 2
     }
+
 
     switch (formatType) {
       case 'Numeric':
@@ -192,7 +194,7 @@ export const ValueStatistic: FC = () => {
       })
 
       return (
-        <div key={lineIndex} style={{ marginBottom: lineIndex < lines.length - 1 ? '4px' : '0' }}>
+        <div key={lineIndex} style={styles.tooltipContent}>
           {parsedLine}
         </div>
       )
@@ -201,27 +203,11 @@ export const ValueStatistic: FC = () => {
 
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      alignItems: 'flex-start',
-      fontFamily: 'system-ui, -apple-system, sans-serif',
-      lineHeight: 1.2
-    }}>
+    <div style={styles.container}>
       {/* Label with optional tooltip icon */}
       {label && (
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          marginBottom: '8px',
-          position: 'relative'
-        }}>
-          <span style={{ 
-            fontWeight: '600', 
-            fontSize: '14px', 
-            color: '#333',
-            marginRight: tooltip ? '4px' : '0'
-          }}>
+        <div style={styles.labelContainer}>
+          <span style={{...styles.label, ...(!tooltip ? styles.labelWithoutTooltip : {})}}>
             {label}
           </span>
           
@@ -237,26 +223,7 @@ export const ValueStatistic: FC = () => {
               tabIndex={0}
               role="button"
               aria-describedby={isTooltipVisible ? "statistic-tooltip" : undefined}
-              style={{
-                cursor: 'pointer',
-                fontSize: '12px',
-                color: '#666',
-                fontWeight: 'normal',
-                outline: 'none',
-                borderRadius: '50%',
-                width: '16px',
-                height: '16px',
-                display: 'inline-flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'color 0.2s ease'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.color = '#333'
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.color = '#666'
-              }}
+              style={styles.tooltipIcon}
             >
               ⓘ
             </span>
@@ -265,23 +232,13 @@ export const ValueStatistic: FC = () => {
       )}
 
       {/* Value */}
-      <div style={{ 
-        fontSize: '32px', 
-        fontWeight: '700', 
-        color: '#000',
-        marginBottom: caption ? '8px' : '0',
-        lineHeight: 1
-      }}>
+      <div style={{...styles.value, ...(!caption ? styles.valueWithoutCaption : {})}}>
         {formatValue(value || 0, format)}
       </div>
 
       {/* Caption */}
       {caption && (
-        <div style={{ 
-          fontSize: '12px', 
-          color: '#666',
-          fontWeight: '400'
-        }}>
+        <div style={styles.caption}>
           {caption}
         </div>
       )}
@@ -293,22 +250,9 @@ export const ValueStatistic: FC = () => {
           id="statistic-tooltip"
           role="tooltip"
           style={{
-            position: 'absolute',
+            ...styles.tooltip,
             top: tooltipPosition.top,
-            left: tooltipPosition.left,
-            zIndex: 1000,
-            padding: '8px 12px',
-            backgroundColor: '#333',
-            color: 'white',
-            borderRadius: '4px',
-            fontSize: '12px',
-            lineHeight: '1.4',
-            maxWidth: '200px',
-            wordWrap: 'break-word',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-            opacity: 1,
-            transition: 'opacity 0.2s ease-in-out',
-            pointerEvents: 'none'
+            left: tooltipPosition.left
           }}
         >
           {parseMarkdown(tooltip)}
@@ -316,24 +260,8 @@ export const ValueStatistic: FC = () => {
           {/* Arrow pointing to icon */}
           <div
             style={{
-              position: 'absolute',
-              ...(tooltipPosition.top < 0 ? {
-                // Tooltip is above icon, arrow points down
-                top: '100%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                borderLeft: '6px solid transparent',
-                borderRight: '6px solid transparent',
-                borderTop: '6px solid #333'
-              } : {
-                // Tooltip is below icon, arrow points up
-                bottom: '100%',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                borderLeft: '6px solid transparent',
-                borderRight: '6px solid transparent',
-                borderBottom: '6px solid #333'
-              })
+              ...styles.tooltipArrow,
+              ...(tooltipPosition.top < 0 ? styles.tooltipArrowDown : styles.tooltipArrowUp)
             }}
           />
         </div>
