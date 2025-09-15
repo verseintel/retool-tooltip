@@ -4096,3 +4096,543 @@ The README now serves as a comprehensive guide for both users and developers, pr
 
 ---
 
+_**User (2025-09-15 12:34Z)**_
+
+I want to introduce a new retool parameter expecting a array like this:
+
+'''
+[{"id":101,"scale":34,"name":"Transformador","min_value":1.3,"max_value":1.5},{"id":100,"scale":34,"name":"Impactante","min_value":1.2,"max_value":1.3},{"id":99,"scale":34,"name":"Positivo / Contributivo","min_value":1.09,"max_value":1.2},{"id":98,"scale":34,"name":"Neutro / Alinhado","min_value":0.99,"max_value":1.09},{"id":97,"scale":34,"name":"Detrator","min_value":0.75,"max_value":0.99},{"id":96,"scale":34,"name":"Crítico","min_value":0.5,"max_value":0.75}]
+'''
+
+These min_value and max_values will be used to extract a `name` according to the Value passed to the component.
+
+For example, a value = 1.4 will select the "Transformador" label. 
+
+I also want to use this calculation to fill the current caption automatically based on the received value, if the caption parameter is empty.
+
+---
+
+_**Assistant**_
+
+Great idea! This will add intelligent value categorization to the component. Let me implement this feature by adding a new parameter for the value ranges and updating the logic to automatically determine the category and caption.
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 5, lines removed: undefined
+
+```diff
+@@ -49,4 +49,9 @@
+      initialValue: 2
+    })
++ 
++   const [valueRanges, _setValueRanges] = Retool.useStateArray({
++     name: 'Value Ranges',
++     description: 'Array of value ranges with min_value, max_value, and name for automatic categorization'
++   })
+  
+    // Tooltip state
+```
+
+</details>
+
+---
+
+Now let me add a function to find the category based on the value and ranges:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 25, lines removed: undefined
+
+```diff
+@@ -61,4 +61,29 @@
+    const iconRef = useRef<HTMLSpanElement>(null)
+    const timeoutRef = useRef<NodeJS.Timeout>()
++ 
++   // Find category name based on value and ranges
++   const findCategoryForValue = (val: number, ranges: any[]): string | null => {
++     if (!ranges || !Array.isArray(ranges) || ranges.length === 0) {
++       return null
++     }
++ 
++     // Find the range that contains the value
++     const matchingRange = ranges.find(range => 
++       val >= range.min_value && val < range.max_value
++     )
++ 
++     return matchingRange ? matchingRange.name : null
++   }
++ 
++   // Get the effective caption (use auto-generated if caption is empty)
++   const getEffectiveCaption = (): string => {
++     if (caption && caption.trim() !== '') {
++       return caption
++     }
++ 
++     // Auto-generate caption based on value ranges
++     const category = findCategoryForValue(value || 0, valueRanges || [])
++     return category || ''
++   }
+  
+    // Format the value based on the format type
+```
+
+</details>
+
+---
+
+Now let me update the JSX to use the effective caption:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 2, lines removed: 2
+
+```diff
+@@ -268,7 +268,7 @@
+  
+        {/* Caption */}
+-       {caption && (
++       {getEffectiveCaption() && (
+          <div style={styles.caption}>
+-           {caption}
++           {getEffectiveCaption()}
+          </div>
+        )}
+```
+
+</details>
+
+---
+
+I need to fix the value styling logic since we're now using the effective caption:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -263,5 +263,5 @@
+  
+        {/* Value */}
+-       <div style={{...styles.value, ...(!caption ? styles.valueWithoutCaption : {})}}>
++       <div style={{...styles.value, ...(!getEffectiveCaption() ? styles.valueWithoutCaption : {})}}>
+          {formatValue(value || 0, format)}
+        </div>
+```
+
+</details>
+
+---
+
+Let me also update the caption parameter description to reflect the new auto-generation feature:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -21,5 +21,5 @@
+    const [caption, _setCaption] = Retool.useStateString({
+      name: 'Caption',
+-     description: 'The caption text to display below the value',
++     description: 'The caption text to display below the value. If empty, will auto-generate from Value Ranges',
+      initialValue: 'Since last month'
+    })
+```
+
+</details>
+
+---
+
+Let me check for any linting errors:
+
+
+---
+
+
+
+---
+
+Let me fix the TypeScript error by adding proper typing for the value ranges:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 10, lines removed: 1
+
+```diff
+@@ -61,7 +61,16 @@
+    const iconRef = useRef<HTMLSpanElement>(null)
+    const timeoutRef = useRef<NodeJS.Timeout>()
++ 
++   // Type definition for value range objects
++   interface ValueRange {
++     id: number
++     scale: number
++     name: string
++     min_value: number
++     max_value: number
++   }
+  
+    // Find category name based on value and ranges
+-   const findCategoryForValue = (val: number, ranges: any[]): string | null => {
++   const findCategoryForValue = (val: number, ranges: ValueRange[]): string | null => {
+      if (!ranges || !Array.isArray(ranges) || ranges.length === 0) {
+        return null
+```
+
+</details>
+
+---
+
+Let me check for linting errors again:
+
+
+---
+
+
+
+---
+
+I need to fix the type casting for the valueRanges parameter:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 2, lines removed: 1
+
+```diff
+@@ -92,5 +92,6 @@
+  
+      // Auto-generate caption based on value ranges
+-     const category = findCategoryForValue(value || 0, valueRanges || [])
++     const ranges = (valueRanges || []) as ValueRange[]
++     const category = findCategoryForValue(value || 0, ranges)
+      return category || ''
+    }
+```
+
+</details>
+
+---
+
+Let me check for linting errors again:
+
+
+---
+
+
+
+---
+
+Let me fix this by using a more robust type checking approach:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -92,5 +92,5 @@
+  
+      // Auto-generate caption based on value ranges
+-     const ranges = (valueRanges || []) as ValueRange[]
++     const ranges = (valueRanges || []) as unknown as ValueRange[]
+      const category = findCategoryForValue(value || 0, ranges)
+      return category || ''
+```
+
+</details>
+
+---
+
+
+
+---
+
+Perfect! Now let me update the README.md to document this new feature:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/README.md</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 2, lines removed: 1
+
+```diff
+@@ -21,9 +21,10 @@
+  - **`Label`** (string, default: "Gross volume") - The label text displayed above the value
+  - **`Value`** (number, default: 7552.8) - The numeric value to display
+- - **`Caption`** (string, default: "Since last month") - Descriptive text below the value
++ - **`Caption`** (string, default: "Since last month") - Descriptive text below the value. If empty, auto-generates from Value Ranges
+  - **`Format`** (dropdown) - Value format: Standard, Numeric, Percent, Currency (BRL), Currency (USD)
+  - **`Tooltip`** (string) - Help text with markdown support (**bold**, _italic_, line breaks)
+  - **`Minimum Fraction Digits`** (number, default: 2) - Minimum decimal places
+  - **`Maximum Fraction Digits`** (number, default: 2) - Maximum decimal places
++ - **`Value Ranges`** (array) - Array of value ranges for automatic categorization
+  
+  **Example Usage:**
+```
+
+</details>
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/README.md</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 38, lines removed: undefined
+
+```diff
+@@ -37,4 +37,42 @@
+  Tooltip: "**Total revenue** for Q4 2024\nIncluding all product lines"
+  ```
++ 
++ **Value Ranges Example:**
++ 
++ The `Value Ranges` parameter accepts an array of objects with the following structure:
++ 
++ ```json
++ [
++   {
++     "id": 101,
++     "scale": 34,
++     "name": "Transformador",
++     "min_value": 1.3,
++     "max_value": 1.5
++   },
++   {
++     "id": 100,
++     "scale": 34,
++     "name": "Impactante",
++     "min_value": 1.2,
++     "max_value": 1.3
++   },
++   {
++     "id": 99,
++     "scale": 34,
++     "name": "Positivo / Contributivo",
++     "min_value": 1.09,
++     "max_value": 1.2
++   }
++ ]
++ ```
++ 
++ **Auto-Categorization:**
++ 
++ When `Caption` is empty, the component automatically determines the appropriate category based on the `Value` and `Value Ranges`:
++ 
++ - Value `1.4` → Caption: "Transformador"
++ - Value `1.25` → Caption: "Impactante"  
++ - Value `1.15` → Caption: "Positivo / Contributivo"
+  
+  ## Design System
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've successfully implemented the value ranges feature. Here's what I've added:
+
+## 🎯 New Value Ranges Feature
+
+### **✅ Implementation Details:**
+
+1. **New Parameter**: `Value Ranges` (array) - Accepts an array of value range objects
+2. **Auto-Categorization Logic**: Automatically determines category based on value and ranges
+3. **Smart Caption**: Uses auto-generated caption when the Caption parameter is empty
+4. **Type Safety**: Proper TypeScript interfaces for the value range objects
+
+### **�� How It Works:**
+
+1. **Value Range Structure**:
+   ```json
+   {
+     "id": 101,
+     "scale": 34,
+     "name": "Transformador",
+     "min_value": 1.3,
+     "max_value": 1.5
+   }
+   ```
+
+2. **Categorization Logic**:
+   - Finds the range where `value >= min_value && value < max_value`
+   - Returns the `name` from the matching range
+   - Uses this as the caption when Caption parameter is empty
+
+3. **Example Behavior**:
+   - Value `1.4` → Caption: "Transformador"
+   - Value `1.25` → Caption: "Impactante"
+   - Value `1.15` → Caption: "Positivo / Contributivo"
+
+### **�� Key Features:**
+
+- ✅ **Intelligent Caption**: Auto-generates captions based on value ranges
+- ✅ **Flexible Override**: Manual caption still takes precedence when provided
+- ✅ **Type Safety**: Proper TypeScript interfaces and error handling
+- ✅ **Robust Logic**: Handles edge cases and invalid data gracefully
+- ✅ **Documentation**: Complete examples and usage instructions
+
+### **📋 Updated Parameters:**
+
+- **`Caption`**: Now auto-generates from Value Ranges when empty
+- **`Value Ranges`**: New array parameter for value categorization
+- **All existing parameters**: Remain unchanged and fully functional
+
+### **🚀 Usage Examples:**
+
+**Manual Caption (Priority):**
+```
+Caption: "Custom text" → Shows "Custom text"
+```
+
+**Auto-Generated Caption:**
+```
+Caption: "" (empty)
+Value: 1.4
+Value Ranges: [{"name": "Transformador", "min_value": 1.3, "max_value": 1.5}]
+→ Shows "Transformador"
+```
+
+This feature makes the component much more intelligent and useful for business dashboards where values need to be categorized automatically based on predefined ranges!
+
+---
+
+_**User (2025-09-15 12:34Z)**_
+
+Let's remove the 'Since last month' as initial value for the caption
+
+---
+
+_**Assistant**_
+
+I'll remove the default value for the Caption parameter so it starts empty and can use the auto-generation feature by default.
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/src/components/ValueStatistic/index.tsx</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 2
+
+```diff
+@@ -21,6 +21,5 @@
+    const [caption, _setCaption] = Retool.useStateString({
+      name: 'Caption',
+-     description: 'The caption text to display below the value. If empty, will auto-generate from Value Ranges',
+-     initialValue: 'Since last month'
++     description: 'The caption text to display below the value. If empty, will auto-generate from Value Ranges'
+    })
+  
+```
+
+</details>
+
+---
+
+Now let me update the README.md to reflect this change:
+
+
+---
+
+<details><summary>Edit file: /Users/nandico/Dev/value-components/README.md</summary>
+
+undefined
+
+**Chunk 1**
+Lines added: 1, lines removed: 1
+
+```diff
+@@ -21,5 +21,5 @@
+  - **`Label`** (string, default: "Gross volume") - The label text displayed above the value
+  - **`Value`** (number, default: 7552.8) - The numeric value to display
+- - **`Caption`** (string, default: "Since last month") - Descriptive text below the value. If empty, auto-generates from Value Ranges
++ - **`Caption`** (string) - Descriptive text below the value. If empty, auto-generates from Value Ranges
+  - **`Format`** (dropdown) - Value format: Standard, Numeric, Percent, Currency (BRL), Currency (USD)
+  - **`Tooltip`** (string) - Help text with markdown support (**bold**, _italic_, line breaks)
+```
+
+</details>
+
+---
+
+Perfect! ✅ I've successfully removed the default value for the Caption parameter. 
+
+## 🎯 Changes Made:
+
+### **✅ Caption Parameter Updated:**
+- **Before**: `initialValue: 'Since last month'`
+- **After**: No initial value (empty by default)
+
+### **📋 Updated Behavior:**
+- **Caption starts empty** by default
+- **Auto-generation is now the primary behavior** when no manual caption is provided
+- **Manual captions still take precedence** when explicitly set
+
+### **🚀 Benefits:**
+1. **Cleaner Default State**: Component starts with auto-generation enabled
+2. **Better UX**: Users immediately see the value range categorization in action
+3. **Flexible**: Users can still override with custom captions when needed
+
+### **📖 Documentation Updated:**
+- README.md now reflects that Caption has no default value
+- Clear explanation that empty caption triggers auto-generation
+
+This change makes the auto-categorization feature more prominent and encourages users to leverage the intelligent caption generation based on their value ranges!
+
+---
+

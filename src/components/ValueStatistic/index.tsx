@@ -16,12 +16,11 @@ export const ValueStatistic: FC = () => {
     name: 'Value',
     description: 'The numeric value to display',
     initialValue: 7552.8
-  })
+  }) 
 
   const [caption, _setCaption] = Retool.useStateString({
     name: 'Caption',
-    description: 'The caption text to display below the value',
-    initialValue: 'Since last month'
+    description: 'The caption text to display below the value. If empty, will auto-generate from Value Ranges'
   })
 
   const [format, _setFormat] = Retool.useStateEnumeration({
@@ -49,12 +48,52 @@ export const ValueStatistic: FC = () => {
     initialValue: 2
   })
 
+  const [valueRanges, _setValueRanges] = Retool.useStateArray({
+    name: 'Value Ranges',
+    description: 'Array of value ranges with min_value, max_value, and name for automatic categorization'
+  })
+
   // Tooltip state
   const [isTooltipVisible, setIsTooltipVisible] = useState(false)
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 })
   const tooltipRef = useRef<HTMLDivElement>(null)
   const iconRef = useRef<HTMLSpanElement>(null)
   const timeoutRef = useRef<NodeJS.Timeout>()
+
+  // Type definition for value range objects
+  interface ValueRange {
+    id: number
+    scale: number
+    name: string
+    min_value: number
+    max_value: number
+  }
+
+  // Find category name based on value and ranges
+  const findCategoryForValue = (val: number, ranges: ValueRange[]): string | null => {
+    if (!ranges || !Array.isArray(ranges) || ranges.length === 0) {
+      return null
+    }
+
+    // Find the range that contains the value
+    const matchingRange = ranges.find(range => 
+      val >= range.min_value && val < range.max_value
+    )
+
+    return matchingRange ? matchingRange.name : null
+  }
+
+  // Get the effective caption (use auto-generated if caption is empty)
+  const getEffectiveCaption = (): string => {
+    if (caption && caption.trim() !== '') {
+      return caption
+    }
+
+    // Auto-generate caption based on value ranges
+    const ranges = (valueRanges || []) as unknown as ValueRange[]
+    const category = findCategoryForValue(value || 0, ranges)
+    return category || ''
+  }
 
   // Format the value based on the format type
   const formatValue = (val: number, formatType: string): string => {
@@ -232,14 +271,14 @@ export const ValueStatistic: FC = () => {
       )}
 
       {/* Value */}
-      <div style={{...styles.value, ...(!caption ? styles.valueWithoutCaption : {})}}>
+      <div style={{...styles.value, ...(!getEffectiveCaption() ? styles.valueWithoutCaption : {})}}>
         {formatValue(value || 0, format)}
       </div>
 
       {/* Caption */}
-      {caption && (
+      {getEffectiveCaption() && (
         <div style={styles.caption}>
-          {caption}
+          {getEffectiveCaption()}
         </div>
       )}
 

@@ -20,11 +20,12 @@ A comprehensive statistic display component that shows key metrics with customiz
 
 - **`Label`** (string, default: "Gross volume") - The label text displayed above the value
 - **`Value`** (number, default: 7552.8) - The numeric value to display
-- **`Caption`** (string, default: "Since last month") - Descriptive text below the value
+- **`Caption`** (string) - Descriptive text below the value. If empty, auto-generates from Value Ranges
 - **`Format`** (dropdown) - Value format: Standard, Numeric, Percent, Currency (BRL), Currency (USD)
 - **`Tooltip`** (string) - Help text with markdown support (**bold**, _italic_, line breaks)
 - **`Minimum Fraction Digits`** (number, default: 2) - Minimum decimal places
 - **`Maximum Fraction Digits`** (number, default: 2) - Maximum decimal places
+- **`Value Ranges`** (array) - Array of value ranges for automatic categorization
 
 **Example Usage:**
 
@@ -35,6 +36,44 @@ Caption: "Q4 2024"
 Format: "Currency (USD)"
 Tooltip: "**Total revenue** for Q4 2024\nIncluding all product lines"
 ```
+
+**Value Ranges Example:**
+
+The `Value Ranges` parameter accepts an array of objects with the following structure:
+
+```json
+[
+  {
+    "id": 101,
+    "scale": 34,
+    "name": "Transformador",
+    "min_value": 1.3,
+    "max_value": 1.5
+  },
+  {
+    "id": 100,
+    "scale": 34,
+    "name": "Impactante",
+    "min_value": 1.2,
+    "max_value": 1.3
+  },
+  {
+    "id": 99,
+    "scale": 34,
+    "name": "Positivo / Contributivo",
+    "min_value": 1.09,
+    "max_value": 1.2
+  }
+]
+```
+
+**Auto-Categorization:**
+
+When `Caption` is empty, the component automatically determines the appropriate category based on the `Value` and `Value Ranges`:
+
+- Value `1.4` → Caption: "Transformador"
+- Value `1.25` → Caption: "Impactante"
+- Value `1.15` → Caption: "Positivo / Contributivo"
 
 ## Design System
 
