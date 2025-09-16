@@ -1,110 +1,212 @@
-# Retool UI Components
+# Value Components
 
-A collection of reusable UI components for Retool applications including tooltips, popovers, and badges with accessibility features.
+A collection of reusable UI components for Retool applications, built with a focus on data visualization and value display. This library provides a consistent design system with shared styles and components optimized for business dashboards and analytics.
 
 ## Components
 
-### 1. RetoolTooltip
+### ValueStatistic
 
-A customizable tooltip component that provides hover-based help text.
-
-**Features:**
-
-- Mouse hover activation
-- Keyboard accessibility (Tab to focus, Escape to close)
-- Configurable positioning (top, bottom, left, right)
-- Customizable delay before showing
-- ARIA compliance for screen readers
-
-**Parameters:**
-
-- **`tooltipText`** (string, required) - The text to display in the tooltip
-- **`componentRef`** (string, optional) - Reference to the Retool component to show tooltip on
-- **`position`** (string, optional) - Tooltip position: `top`, `bottom`, `left`, `right` (default: `top`)
-- **`delay`** (number, optional) - Delay in milliseconds before showing tooltip (default: `500`)
-
-### 2. RetoolPopover
-
-A more advanced tooltip with click-to-show functionality and click-outside-to-close behavior.
+A comprehensive statistic display component that shows key metrics with customizable formatting and tooltips.
 
 **Features:**
 
-- Click to show/hide
-- Click outside to close
-- Configurable positioning
-- Larger content area
-- ARIA compliance
+- **Flexible Formatting**: Support for Standard, Numeric, Percent, and Currency (USD/BRL) formats
+- **Customizable Precision**: Configurable minimum and maximum decimal places
+- **Interactive Tooltips**: Hover-based help text with markdown support
+- **Smart Color Coding**: Automatic color gradient from red (min) to green (max) for numeric values
+- **Accessibility**: Full keyboard navigation and screen reader support
+- **Responsive Design**: Clean, modern layout that works across devices
 
 **Parameters:**
 
-- **`content`** (string, required) - The content to display in the popover
-- **`triggerText`** (string, optional) - The text for the trigger button (default: "Click me")
-- **`position`** (string, optional) - Popover position: `top`, `bottom`, `left`, `right` (default: `bottom`)
+- **`Label`** (string, default: "Gross volume") - The label text displayed above the value
+- **`Value`** (number, default: 7552.8) - The numeric value to display
+- **`Caption`** (string) - Descriptive text below the value. If empty, auto-generates from Value Ranges
+- **`Format`** (dropdown) - Value format: Standard, Numeric, Percent, Currency (BRL), Currency (USD)
+- **`Tooltip`** (string) - Help text with markdown support (**bold**, _italic_, line breaks)
+- **`Minimum Fraction Digits`** (number, default: 2) - Minimum decimal places
+- **`Maximum Fraction Digits`** (number, default: 2) - Maximum decimal places
+- **`Value Ranges`** (array) - Array of value ranges for automatic categorization
 
-### 3. RetoolBadge
+**Example Usage:**
 
-A simple status indicator component with multiple variants and sizes.
+```
+Label: "Revenue"
+Value: 125000
+Caption: "Q4 2024"
+Format: "Currency (USD)"
+Tooltip: "**Total revenue** for Q4 2024\nIncluding all product lines"
+```
 
-**Features:**
+**Value Ranges Example:**
 
-- Multiple color variants (primary, secondary, success, warning, danger)
-- Three sizes (small, medium, large)
-- Clean, modern design
-- Inline display
+The `Value Ranges` parameter accepts an array of objects with the following structure:
 
-**Parameters:**
+```json
+[
+  {
+    "id": 101,
+    "scale": 34,
+    "name": "Transformador",
+    "min_value": 1.3,
+    "max_value": 1.5
+  },
+  {
+    "id": 100,
+    "scale": 34,
+    "name": "Impactante",
+    "min_value": 1.2,
+    "max_value": 1.3
+  },
+  {
+    "id": 99,
+    "scale": 34,
+    "name": "Positivo / Contributivo",
+    "min_value": 1.09,
+    "max_value": 1.2
+  }
+]
+```
 
-- **`text`** (string, required) - The text to display in the badge
-- **`variant`** (string, optional) - Badge variant: `primary`, `secondary`, `success`, `warning`, `danger` (default: `primary`)
-- **`size`** (string, optional) - Badge size: `small`, `medium`, `large` (default: `medium`)
+**Auto-Categorization:**
+
+When `Caption` is empty, the component automatically determines the appropriate category based on the `Value` and `Value Ranges`:
+
+- Value `1.4` → Caption: "Transformador"
+- Value `1.25` → Caption: "Impactante"
+- Value `1.15` → Caption: "Positivo / Contributivo"
+
+**Smart Color Coding:**
+
+For `Format: "Numeric"`, the value color automatically adjusts based on its position within the value ranges:
+
+- **Red** (`#4A151B`) - Values at the minimum range
+- **Green** (`#5CBC15`) - Values at the maximum range
+- **Gradient** - Smooth color transition between min and max values
+
+**Example:**
+
+- Value `0.5` (min) → Red color
+- Value `1.0` (middle) → Orange/Yellow color
+- Value `1.5` (max) → Green color
+
+## Design System
+
+This library includes a comprehensive shared styles system that ensures consistency across all components:
+
+### Shared Styles Architecture
+
+```
+src/styles/
+├── typography.ts     # Text and font styles
+├── spacing.ts        # Layout and spacing utilities
+├── tooltip.ts        # Tooltip-related styles
+└── index.ts          # Central export
+```
+
+### Style Categories
+
+- **Typography**: Consistent text styles (labels, captions, values)
+- **Spacing**: Layout utilities and margin/padding helpers
+- **Tooltip**: Reusable tooltip components and interactions
+
+### Component Structure
+
+Each component follows a consistent pattern:
+
+```
+src/components/ComponentName/
+├── index.tsx         # Component logic
+└── styles.ts         # Component-specific styles
+```
 
 ## Usage
 
-1. Drag any of the components onto your Retool canvas
-2. Configure the required parameters (marked as required above)
-3. Optionally customize the optional parameters
-4. The components will render with your specified settings
+1. **Drag Components**: Add components to your Retool canvas
+2. **Configure Parameters**: Set values, labels, and formatting options
+3. **Customize Styling**: Use the shared design system for consistency
+4. **Add Interactivity**: Configure tooltips and interactions
 
 ## Accessibility Features
 
-- **ARIA attributes**: Uses `role="tooltip"` and `aria-describedby`
-- **Keyboard support**: Tab to focus, Escape to close
-- **Screen reader friendly**: Proper semantic markup and descriptions
-- **Focus management**: Tooltip appears on focus, disappears on blur
+- **ARIA Compliance**: Proper semantic markup and screen reader support
+- **Keyboard Navigation**: Full keyboard accessibility with Tab and Escape
+- **Focus Management**: Clear focus indicators and logical tab order
+- **Screen Reader Support**: Descriptive labels and tooltip content
 
 ## Development
 
-This component is built using the [Retool Custom Component Libraries](https://docs.retool.com/apps/guides/custom/custom-component-libraries) framework.
+This library is built using the [Retool Custom Component Libraries](https://docs.retool.com/apps/guides/custom/custom-component-libraries) framework with a focus on maintainability and scalability.
 
 ### Prerequisites
 
 - Node.js v20 or later
 - Admin permissions in Retool
+- TypeScript knowledge (for extending components)
 
 ### Getting Started
 
-1. Install dependencies:
+1. **Install Dependencies:**
 
    ```bash
    npm install
    ```
 
-2. Log in to Retool:
+2. **Initialize Retool Connection:**
 
    ```bash
-   npx retool-ccl login
+   npx retool-ccl init
    ```
 
-3. Start development mode:
+3. **Start Development Mode:**
 
    ```bash
-   npx retool-ccl dev
+   npm run dev
    ```
 
-4. Deploy when ready:
+4. **Deploy to Production:**
    ```bash
-   npx retool-ccl deploy
+   npm run deploy
    ```
+
+### Creating New Components
+
+Follow the established pattern for consistency:
+
+1. **Create Component Directory:**
+
+   ```
+   src/components/ValueChart/
+   ├── index.tsx
+   └── styles.ts
+   ```
+
+2. **Use Shared Styles:**
+
+   ```tsx
+   import { typography, spacing } from '../../styles'
+
+   export const valueChartStyles = {
+     container: spacing.container,
+     title: typography.label,
+     value: typography.largeValue
+   }
+   ```
+
+3. **Export from Main Index:**
+   ```tsx
+   // src/index.tsx
+   export { ValueChart } from './components/ValueChart'
+   ```
+
+### Style System Guidelines
+
+- **Compose Shared Styles**: Use object spread to combine shared styles
+- **Component-Specific**: Keep unique styles in component files
+- **Consistent Naming**: Use descriptive names for style objects
+- **Type Safety**: Leverage TypeScript for style validation
+
+See [src/styles/README.md](src/styles/README.md) for detailed documentation.
 
 ## License
 
